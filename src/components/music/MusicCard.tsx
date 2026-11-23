@@ -60,8 +60,11 @@ export function MusicCard({ track, contextTracks, className }: MusicCardProps) {
         className
       )}
     >
-      {/* Artwork container */}
-      <div className="relative aspect-square w-full rounded-lg overflow-hidden bg-[#111116] mb-3 shadow-md">
+      {/* Artwork container with explicit relative position */}
+      <div
+        className="relative aspect-square w-full rounded-lg overflow-hidden bg-[#111116] mb-3 shadow-md"
+        style={{ position: "relative" }}
+      >
         <Image
           src={track.coverUrl}
           alt={track.title}

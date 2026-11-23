@@ -33,14 +33,17 @@ export function MobileNav() {
 
   return (
     <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex flex-col pointer-events-none">
-      {/* Floating mini-player on mobile (pointer-events-auto) */}
+      {/* Floating mini-player on mobile */}
       {currentTrack && (
         <div className="pointer-events-auto mx-2 mb-2 p-2 rounded-xl glass-player border border-white/10 shadow-2xl flex items-center justify-between">
           <div
             onClick={() => router.push("/now-playing")}
             className="flex items-center gap-2.5 flex-1 min-w-0 cursor-pointer"
           >
-            <div className="relative w-10 h-10 rounded-lg overflow-hidden shrink-0 bg-[#17171F]">
+            <div
+              className="relative w-10 h-10 rounded-lg overflow-hidden shrink-0 bg-[#17171F]"
+              style={{ position: "relative" }}
+            >
               <Image
                 src={currentTrack.coverUrl}
                 alt={currentTrack.title}
@@ -82,7 +85,7 @@ export function MobileNav() {
         </div>
       )}
 
-      {/* Main bottom mobile nav bar (pointer-events-auto) */}
+      {/* Main bottom mobile nav bar */}
       <nav className="pointer-events-auto h-14 bg-[#111116]/95 backdrop-blur-xl border-t border-white/[0.08] flex items-center justify-around px-2">
         {navItems.map((item) => {
           const Icon = item.icon;

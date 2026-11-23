@@ -34,7 +34,10 @@ export function PlaylistCard({ playlist, className }: PlaylistCardProps) {
         className
       )}
     >
-      <div className="relative aspect-square w-full rounded-lg overflow-hidden bg-[#111116] mb-3 shadow-md">
+      <div
+        className="relative aspect-square w-full rounded-lg overflow-hidden bg-[#111116] mb-3 shadow-md"
+        style={{ position: "relative" }}
+      >
         <Image
           src={playlist.coverUrl}
           alt={playlist.title}

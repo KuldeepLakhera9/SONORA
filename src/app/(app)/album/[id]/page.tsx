@@ -69,13 +69,19 @@ export default function AlbumDetailPage({ params }: PageProps) {
     <div className="flex flex-col gap-8 pb-10">
       {/* 1. HERO HEADER */}
       <div className="relative rounded-3xl overflow-hidden bg-gradient-to-b from-[#17171F] to-[#111116] border border-white/[0.08] p-6 md:p-8 lg:p-10 shadow-2xl">
-        {/* Ambient Blur Backdrop */}
-        <div className="absolute inset-0 opacity-25 filter blur-3xl scale-150 pointer-events-none">
+        {/* Ambient Blur Backdrop with explicit absolute position */}
+        <div
+          className="absolute inset-0 opacity-25 filter blur-3xl scale-150 pointer-events-none"
+          style={{ position: "absolute" }}
+        >
           <Image src={album.coverUrl} alt="" fill className="object-cover" />
         </div>
 
         <div className="relative z-10 flex flex-col md:flex-row items-center md:items-end gap-6 md:gap-8">
-          <div className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-60 md:h-60 rounded-2xl overflow-hidden shadow-2xl shrink-0 border border-white/10">
+          <div
+            className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-60 md:h-60 rounded-2xl overflow-hidden shadow-2xl shrink-0 border border-white/10"
+            style={{ position: "relative" }}
+          >
             <Image
               src={album.coverUrl}
               alt={album.title}

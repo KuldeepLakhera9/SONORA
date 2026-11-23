@@ -44,7 +44,10 @@ export function FeaturedBanner({ track, className }: FeaturedBannerProps) {
       )}
     >
       {/* Background ambient glow image */}
-      <div className="absolute inset-0 opacity-25 filter blur-3xl scale-125 pointer-events-none">
+      <div
+        className="absolute inset-0 opacity-25 filter blur-3xl scale-125 pointer-events-none"
+        style={{ position: "absolute" }}
+      >
         <Image
           src={track.coverUrl}
           alt=""
@@ -121,7 +124,10 @@ export function FeaturedBanner({ track, className }: FeaturedBannerProps) {
         </div>
 
         {/* Right Column: Hero Artwork */}
-        <div className="relative group shrink-0 w-56 h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+        <div
+          className="relative group shrink-0 w-56 h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 rounded-2xl overflow-hidden shadow-2xl border border-white/10"
+          style={{ position: "relative" }}
+        >
           <Image
             src={track.coverUrl}
             alt={track.title}

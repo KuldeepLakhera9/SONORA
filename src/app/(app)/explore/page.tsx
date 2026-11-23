@@ -114,7 +114,10 @@ export default function ExplorePage() {
                 onClick={() => handlePlayActivity(act.trackIds)}
                 className="group relative rounded-2xl overflow-hidden bg-[#17171F] border border-white/5 hover:border-purple-500/30 transition-all duration-300 cursor-pointer shadow-lg hover:scale-[1.02]"
               >
-                <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#111116]">
+                <div
+                  className="relative aspect-[16/10] w-full overflow-hidden bg-[#111116]"
+                  style={{ position: "relative" }}
+                >
                   <Image
                     src={act.coverUrl}
                     alt={act.name}

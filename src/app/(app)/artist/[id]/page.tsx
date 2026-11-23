@@ -57,8 +57,8 @@ export default function ArtistDetailPage({ params }: PageProps) {
     <div className="flex flex-col gap-10 pb-12">
       {/* 1. HERO BANNER */}
       <div className="relative rounded-3xl overflow-hidden min-h-[340px] md:min-h-[400px] flex flex-col justify-end p-6 md:p-10 border border-white/10 shadow-2xl">
-        {/* Banner background photo */}
-        <div className="absolute inset-0 z-0">
+        {/* Banner background photo with explicit absolute position */}
+        <div className="absolute inset-0 z-0" style={{ position: "absolute" }}>
           <Image
             src={artist.bannerUrl}
             alt={artist.name}
@@ -72,7 +72,10 @@ export default function ArtistDetailPage({ params }: PageProps) {
 
         {/* Artist Profile Content */}
         <div className="relative z-10 flex flex-col md:flex-row items-center md:items-end gap-6 md:gap-8">
-          <div className="relative w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border-4 border-purple-500/30 shadow-2xl shrink-0">
+          <div
+            className="relative w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border-4 border-purple-500/30 shadow-2xl shrink-0"
+            style={{ position: "relative" }}
+          >
             <Image
               src={artist.avatarUrl}
               alt={artist.name}

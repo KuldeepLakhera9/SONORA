@@ -89,10 +89,11 @@ export function Topbar() {
         {/* Notifications */}
         <NotificationDropdown />
 
-        {/* User Profile Avatar */}
+        {/* User Profile Avatar with explicit relative position */}
         <Link
           href="/library"
-          className="relative w-8 h-8 md:w-9 md:h-9 rounded-full overflow-hidden border border-purple-500/40 hover:border-purple-400 transition-colors"
+          className="relative block w-8 h-8 md:w-9 md:h-9 rounded-full overflow-hidden border border-purple-500/40 hover:border-purple-400 transition-colors"
+          style={{ position: "relative" }}
           title="Your Profile"
         >
           <Image

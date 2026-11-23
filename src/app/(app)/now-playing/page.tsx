@@ -126,8 +126,11 @@ export default function NowPlayingPage() {
       {/* Central View: Player or Lyrics */}
       {activeTab === "player" ? (
         <div className="w-full flex flex-col items-center">
-          {/* Large Artwork with Shadow */}
-          <div className="relative aspect-square w-64 sm:w-80 md:w-96 rounded-3xl overflow-hidden shadow-2xl border border-white/10 mb-8 bg-[#17171F] group">
+          {/* Large Artwork with Shadow and explicit relative position */}
+          <div
+            className="relative aspect-square w-64 sm:w-80 md:w-96 rounded-3xl overflow-hidden shadow-2xl border border-white/10 mb-8 bg-[#17171F] group"
+            style={{ position: "relative" }}
+          >
             <Image
               src={currentTrack.coverUrl}
               alt={currentTrack.title}

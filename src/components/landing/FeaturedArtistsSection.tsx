@@ -38,7 +38,10 @@ export function FeaturedArtistsSection() {
               href={`/artist/${artist.id}`}
               className="group relative flex flex-col rounded-2xl overflow-hidden bg-[#17171F] border border-white/5 hover:border-purple-500/30 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-950/20"
             >
-              <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#111116]">
+              <div
+                className="relative aspect-[4/5] w-full overflow-hidden bg-[#111116]"
+                style={{ position: "relative" }}
+              >
                 <Image
                   src={artist.avatarUrl}
                   alt={artist.name}

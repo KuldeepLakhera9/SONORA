@@ -81,10 +81,11 @@ export function BottomPlayer() {
     <footer className="fixed bottom-0 left-0 right-0 z-40 h-20 md:h-24 px-3 md:px-6 glass-player flex items-center justify-between select-none">
       {/* LEFT SECTION: Track details & Like */}
       <div className="flex items-center gap-3 w-1/4 min-w-[150px] md:min-w-[220px]">
-        {/* Cover thumbnail */}
+        {/* Cover thumbnail with explicit relative position */}
         <div
           onClick={handleExpand}
           className="relative w-11 h-11 md:w-14 md:h-14 rounded-lg overflow-hidden shrink-0 bg-[#17171F] cursor-pointer group shadow-md"
+          style={{ position: "relative" }}
         >
           <Image
             src={currentTrack.coverUrl}

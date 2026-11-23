@@ -34,7 +34,10 @@ export function AlbumCard({ album, className }: AlbumCardProps) {
         className
       )}
     >
-      <div className="relative aspect-square w-full rounded-lg overflow-hidden bg-[#111116] mb-3 shadow-md">
+      <div
+        className="relative aspect-square w-full rounded-lg overflow-hidden bg-[#111116] mb-3 shadow-md"
+        style={{ position: "relative" }}
+      >
         <Image
           src={album.coverUrl}
           alt={album.title}

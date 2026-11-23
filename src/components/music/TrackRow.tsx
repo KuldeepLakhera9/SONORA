@@ -110,9 +110,12 @@ export function TrackRow({
           )}
         </div>
 
-        {/* Thumbnail Artwork */}
+        {/* Thumbnail Artwork with explicit relative position */}
         {showCover && (
-          <div className="relative w-10 h-10 rounded overflow-hidden shrink-0 bg-[#17171F]">
+          <div
+            className="relative w-10 h-10 rounded overflow-hidden shrink-0 bg-[#17171F]"
+            style={{ position: "relative" }}
+          >
             <Image
               src={track.coverUrl}
               alt={track.title}

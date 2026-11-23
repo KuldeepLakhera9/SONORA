@@ -30,8 +30,11 @@ export function GenreCard({ genre, className }: GenreCardProps) {
         </p>
       </div>
 
-      {/* Angled artwork thumbnail */}
-      <div className="absolute -bottom-2 -right-3 w-20 h-20 md:w-28 md:h-28 rounded-lg overflow-hidden shadow-2xl rotate-12 transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110">
+      {/* Angled artwork thumbnail with explicit relative position */}
+      <div
+        className="absolute -bottom-2 -right-3 w-20 h-20 md:w-28 md:h-28 rounded-lg overflow-hidden shadow-2xl rotate-12 transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110"
+        style={{ position: "absolute" }}
+      >
         <Image
           src={genre.coverUrl}
           alt={genre.name}

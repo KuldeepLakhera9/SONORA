@@ -52,7 +52,10 @@ export function LandingHero() {
 
         {/* High-Impact Visual Music Composition Card */}
         <div className="relative w-full max-w-5xl rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-gradient-to-b from-[#17171F] to-[#09090D] p-3 md:p-6">
-          <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden shadow-inner">
+          <div
+            className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden shadow-inner"
+            style={{ position: "relative" }}
+          >
             <Image
               src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1800&q=80"
               alt="SONORA Studio Experience"
@@ -66,7 +69,10 @@ export function LandingHero() {
             {/* Overlaid Floating Mini Cards */}
             <div className="absolute bottom-6 left-6 right-6 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
               <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-black/70 backdrop-blur-md border border-white/10 shadow-xl max-w-sm">
-                <div className="relative w-12 h-12 rounded-xl overflow-hidden shrink-0">
+                <div
+                  className="relative w-12 h-12 rounded-xl overflow-hidden shrink-0"
+                  style={{ position: "relative" }}
+                >
                   <Image
                     src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=200&q=80"
                     alt="Album Cover"

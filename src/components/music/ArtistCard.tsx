@@ -45,8 +45,11 @@ export function ArtistCard({ artist, className }: ArtistCardProps) {
         className
       )}
     >
-      {/* Avatar */}
-      <div className="relative w-32 h-32 md:w-36 md:h-36 rounded-full overflow-hidden bg-[#111116] mb-3 shadow-lg border-2 border-white/5 group-hover:border-purple-500/40 transition-colors duration-300">
+      {/* Avatar with explicit relative position */}
+      <div
+        className="relative w-32 h-32 md:w-36 md:h-36 rounded-full overflow-hidden bg-[#111116] mb-3 shadow-lg border-2 border-white/5 group-hover:border-purple-500/40 transition-colors duration-300"
+        style={{ position: "relative" }}
+      >
         <Image
           src={artist.avatarUrl}
           alt={artist.name}

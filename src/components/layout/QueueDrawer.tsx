@@ -71,7 +71,10 @@ export function QueueDrawer() {
               </div>
 
               <div className="flex items-center gap-3 p-3 rounded-xl bg-purple-950/20 border border-purple-500/20 shadow-sm">
-                <div className="relative w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-[#17171F]">
+                <div
+                  className="relative w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-[#17171F]"
+                  style={{ position: "relative" }}
+                >
                   <Image
                     src={currentTrack.coverUrl}
                     alt={currentTrack.title}
@@ -129,7 +132,10 @@ export function QueueDrawer() {
                       onClick={() => playTrack(track, queue)}
                       className="flex items-center gap-3 flex-1 min-w-0 cursor-pointer"
                     >
-                      <div className="relative w-10 h-10 rounded-lg overflow-hidden shrink-0 bg-[#17171F]">
+                      <div
+                        className="relative w-10 h-10 rounded-lg overflow-hidden shrink-0 bg-[#17171F]"
+                        style={{ position: "relative" }}
+                      >
                         <Image
                           src={track.coverUrl}
                           alt={track.title}
