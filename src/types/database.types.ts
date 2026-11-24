@@ -158,6 +158,7 @@ export interface Database {
           release_date: string;
           album_type: AlbumType;
           status: AlbumStatus;
+          is_featured: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -171,6 +172,7 @@ export interface Database {
           release_date?: string;
           album_type?: AlbumType;
           status?: AlbumStatus;
+          is_featured?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -184,6 +186,7 @@ export interface Database {
           release_date?: string;
           album_type?: AlbumType;
           status?: AlbumStatus;
+          is_featured?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -213,6 +216,8 @@ export interface Database {
           language: string;
           explicit_content: boolean;
           status: TrackStatus;
+          is_featured: boolean;
+          play_count: number;
           created_at: string;
           updated_at: string;
         };
@@ -231,6 +236,8 @@ export interface Database {
           language?: string;
           explicit_content?: boolean;
           status?: TrackStatus;
+          is_featured?: boolean;
+          play_count?: number;
           created_at?: string;
           updated_at?: string;
         };
@@ -249,6 +256,8 @@ export interface Database {
           language?: string;
           explicit_content?: boolean;
           status?: TrackStatus;
+          is_featured?: boolean;
+          play_count?: number;
           created_at?: string;
           updated_at?: string;
         };
@@ -681,10 +690,52 @@ export interface Database {
     };
 
     Views: {
-      [_ in never]: never;
+      public_catalog_tracks: {
+        Row: {
+          id: string;
+          artist_id: string;
+          album_id: string | null;
+          title: string;
+          slug: string;
+          description: string | null;
+          duration_seconds: number;
+          artwork_path: string | null;
+          track_number: number | null;
+          release_date: string;
+          language: string;
+          explicit_content: boolean;
+          status: TrackStatus;
+          is_featured: boolean;
+          play_count: number;
+          created_at: string;
+          updated_at: string;
+          artist_name: string;
+          artist_slug: string;
+          artist_image_path: string | null;
+          album_title: string | null;
+          album_slug: string | null;
+          album_artwork_path: string | null;
+        };
+        Relationships: [];
+      };
     };
 
     Functions: {
+      search_catalog: {
+        Args: {
+          p_query: string;
+          p_limit?: number;
+        };
+        Returns: {
+          entity_type: "track" | "artist" | "album" | "playlist";
+          id: string;
+          title: string;
+          subtitle: string | null;
+          image_url: string | null;
+          slug: string;
+          rank: number;
+        }[];
+      };
       current_user_role: {
         Args: Record<PropertyKey, never>;
         Returns: UserRole;
@@ -723,6 +774,8 @@ export interface Database {
       track_status: TrackStatus;
       submission_status: SubmissionStatus;
     };
+
+    CompositeTypes: Record<string, never>;
   };
 }
 

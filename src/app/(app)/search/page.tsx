@@ -1,15 +1,17 @@
 "use client";
 
-import React, { useState, useMemo, Suspense } from "react";
+import React, { useState, useEffect, useMemo, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Search, X, History, TrendingUp } from "lucide-react";
+import { Search, X, History, TrendingUp, Music2, Users, Disc3, ListMusic } from "lucide-react";
 import { TrackTable } from "@/components/music/TrackTable";
 import { ArtistCard } from "@/components/music/ArtistCard";
 import { AlbumCard } from "@/components/music/AlbumCard";
 import { PlaylistCard } from "@/components/music/PlaylistCard";
 import { SectionHeader } from "@/components/music/SectionHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { CardSkeleton } from "@/components/ui/LoadingSkeleton";
 import { searchAll, mockGenres } from "@/data";
+import type { Track, Artist, Album, Playlist } from "@/types/music";
 import { cn } from "@/lib/utils";
 
 function SearchContent() {
@@ -19,6 +21,14 @@ function SearchContent() {
   const urlParam = searchParams.get("q") || searchParams.get("genre") || "";
   const [query, setQuery] = useState(urlParam);
   const [activeTab, setActiveTab] = useState<"all" | "tracks" | "artists" | "albums" | "playlists">("all");
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchResults, setSearchResults] = useState<{
+    tracks: Track[];
+    artists: Artist[];
+    albums: Album[];
+    playlists: Playlist[];
+  } | null>(null);
+
   const [recentSearches, setRecentSearches] = useState<string[]>([
     "Aura Vance",
     "Synthwave",
@@ -35,9 +45,48 @@ function SearchContent() {
     "Dream Pop",
   ];
 
-  const results = useMemo(() => {
-    return searchAll(query);
+  // Debounced search effect
+  useEffect(() => {
+    if (!query.trim()) {
+      setSearchResults(null);
+      setIsLoading(false);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setIsLoading(true);
+      try {
+        const res = await fetch(`/api/catalog/search?q=${encodeURIComponent(query.trim())}&limit=20`);
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data) {
+            setSearchResults({
+              tracks: json.data.tracks || [],
+              artists: json.data.artists || [],
+              albums: json.data.albums || [],
+              playlists: json.data.playlists || [],
+            });
+            setIsLoading(false);
+            return;
+          }
+        }
+      } catch (err) {
+        console.error("API search error, falling back to local index:", err);
+      }
+
+      // Fallback
+      setSearchResults(searchAll(query.trim()));
+      setIsLoading(false);
+    }, 250);
+
+    return () => clearTimeout(timer);
   }, [query]);
+
+  const results = useMemo(() => {
+    if (searchResults) return searchResults;
+    if (query.trim()) return searchAll(query.trim());
+    return { tracks: [], artists: [], albums: [], playlists: [] };
+  }, [searchResults, query]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,6 +106,7 @@ function SearchContent() {
 
   const handleClearQuery = () => {
     setQuery("");
+    setSearchResults(null);
     router.replace("/search");
   };
 
@@ -122,7 +172,7 @@ function SearchContent() {
                           e.stopPropagation();
                           removeRecent(item);
                         }}
-                        className="text-[#71717A] hover:text-rose-400"
+                        className="p-0.5 rounded-full hover:bg-white/10 text-[#71717A] hover:text-white"
                       >
                         <X className="w-3 h-3" />
                       </button>
@@ -133,155 +183,179 @@ function SearchContent() {
             )}
 
             <div>
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#71717A] mb-2.5">
-                <TrendingUp className="w-3.5 h-3.5 text-purple-400" />
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-purple-400 mb-2.5">
+                <TrendingUp className="w-3.5 h-3.5" />
                 <span>Trending Searches</span>
               </div>
               <div className="flex flex-wrap gap-2">
-                {trendingQueries.map((term) => (
+                {trendingQueries.map((item) => (
                   <button
-                    key={term}
-                    onClick={() => handleSelectQuery(term)}
-                    className="px-3.5 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-xs font-medium text-purple-300 hover:bg-purple-500/20 transition-colors"
+                    key={item}
+                    type="button"
+                    onClick={() => handleSelectQuery(item)}
+                    className="px-3 py-1.5 rounded-full bg-[#17171F] border border-white/5 text-xs text-[#F5F5F7] hover:border-purple-500/40 hover:bg-purple-600/10 transition-all"
                   >
-                    {term}
+                    {item}
                   </button>
                 ))}
               </div>
             </div>
           </div>
         )}
-
-        {/* Filter Tabs when query is present */}
-        {isSearching && (
-          <div className="flex flex-wrap items-center gap-2 pt-2 border-b border-white/[0.06] pb-3">
-            {[
-              { id: "all", label: `All (${totalResults})` },
-              { id: "tracks", label: `Tracks (${results.tracks.length})` },
-              { id: "artists", label: `Artists (${results.artists.length})` },
-              { id: "albums", label: `Albums (${results.albums.length})` },
-              { id: "playlists", label: `Playlists (${results.playlists.length})` },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                className={cn(
-                  "px-4 py-1.5 rounded-full text-xs font-semibold transition-colors",
-                  activeTab === tab.id
-                    ? "bg-[#8B5CF6] text-white shadow-md shadow-purple-600/30"
-                    : "bg-white/5 hover:bg-white/10 text-[#A1A1AA] hover:text-white"
-                )}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        )}
       </div>
 
-      {/* 2. Results Content */}
-      {isSearching && totalResults === 0 ? (
-        <EmptyState
-          icon={Search}
-          title="No results found"
-          description={`We couldn't find any independent tracks, artists, or albums matching "${query}". Try searching for another keyword or check out trending recommendations.`}
-          actionText="Clear Search"
-          onAction={handleClearQuery}
-        />
-      ) : (
-        <div className="flex flex-col gap-10">
-          {/* TRACKS RESULTS */}
-          {(activeTab === "all" || activeTab === "tracks") &&
-            results.tracks.length > 0 && (
-              <section>
-                <SectionHeader
-                  title="Songs & Tracks"
-                  subtitle={`${results.tracks.length} matching independent tracks`}
-                />
-                <TrackTable
-                  tracks={activeTab === "all" ? results.tracks.slice(0, 6) : results.tracks}
-                />
-              </section>
-            )}
-
-          {/* ARTISTS RESULTS */}
-          {(activeTab === "all" || activeTab === "artists") &&
-            results.artists.length > 0 && (
-              <section>
-                <SectionHeader
-                  title="Artists"
-                  subtitle={`${results.artists.length} matching independent creators`}
-                />
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
-                  {(activeTab === "all"
-                    ? results.artists.slice(0, 6)
-                    : results.artists
-                  ).map((artist) => (
-                    <ArtistCard key={artist.id} artist={artist} />
-                  ))}
-                </div>
-              </section>
-            )}
-
-          {/* ALBUMS RESULTS */}
-          {(activeTab === "all" || activeTab === "albums") &&
-            results.albums.length > 0 && (
-              <section>
-                <SectionHeader
-                  title="Albums & EPs"
-                  subtitle={`${results.albums.length} matching releases`}
-                />
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
-                  {(activeTab === "all"
-                    ? results.albums.slice(0, 6)
-                    : results.albums
-                  ).map((album) => (
-                    <AlbumCard key={album.id} album={album} />
-                  ))}
-                </div>
-              </section>
-            )}
-
-          {/* PLAYLISTS RESULTS */}
-          {(activeTab === "all" || activeTab === "playlists") &&
-            results.playlists.length > 0 && (
-              <section>
-                <SectionHeader
-                  title="Playlists"
-                  subtitle={`${results.playlists.length} curated collections`}
-                />
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
-                  {(activeTab === "all"
-                    ? results.playlists.slice(0, 6)
-                    : results.playlists
-                  ).map((pl) => (
-                    <PlaylistCard key={pl.id} playlist={pl} />
-                  ))}
-                </div>
-              </section>
-            )}
+      {/* 2. Categorized Filter Tabs (Only during active search) */}
+      {isSearching && (
+        <div className="flex items-center gap-2 border-b border-white/[0.06] pb-3 overflow-x-auto no-scrollbar">
+          {[
+            { id: "all", label: `All (${totalResults})` },
+            { id: "tracks", label: `Tracks (${results.tracks.length})` },
+            { id: "artists", label: `Artists (${results.artists.length})` },
+            { id: "albums", label: `Albums (${results.albums.length})` },
+            { id: "playlists", label: `Playlists (${results.playlists.length})` },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              className={cn(
+                "px-3.5 py-1.5 rounded-full text-xs font-semibold shrink-0 transition-all",
+                activeTab === tab.id
+                  ? "bg-purple-600 text-white shadow-md shadow-purple-600/20"
+                  : "bg-white/[0.04] text-[#A1A1AA] hover:text-white hover:bg-white/[0.08]"
+              )}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
       )}
 
-      {/* When idle: Popular genres grid */}
-      {!isSearching && (
+      {/* 3. Search Results State */}
+      {isLoading ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <CardSkeleton key={i} />
+          ))}
+        </div>
+      ) : isSearching && totalResults === 0 ? (
+        <EmptyState
+          title={`No results found for "${query}"`}
+          description="Check your spelling, explore by genre, or discover trending independent tracks on Explore."
+          actionText="Explore Music"
+          actionHref="/explore"
+        />
+      ) : isSearching ? (
+        <div className="flex flex-col gap-10">
+          {/* Top Result Card */}
+          {activeTab === "all" && (results.tracks[0] || results.artists[0]) && (
+            <div className="flex flex-col md:flex-row gap-6">
+              <div className="w-full md:w-80 shrink-0">
+                <SectionHeader title="Top Result" />
+                {results.artists[0] ? (
+                  <div className="p-5 rounded-2xl bg-[#17171F] border border-white/5 flex flex-col gap-4">
+                    <ArtistCard artist={results.artists[0]} />
+                  </div>
+                ) : (
+                  <div className="p-5 rounded-2xl bg-[#17171F] border border-white/5 flex flex-col gap-4">
+                    <TrackTable tracks={results.tracks.slice(0, 1)} />
+                  </div>
+                )}
+              </div>
+
+              {results.tracks.length > 0 && (
+                <div className="flex-1">
+                  <SectionHeader title="Matching Songs" />
+                  <TrackTable tracks={results.tracks.slice(0, 4)} />
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Tracks Section */}
+          {(activeTab === "all" || activeTab === "tracks") && results.tracks.length > 0 && (
+            <section>
+              <SectionHeader
+                title="Songs"
+                subtitle={`${results.tracks.length} matching independent tracks`}
+              />
+              <TrackTable tracks={results.tracks} />
+            </section>
+          )}
+
+          {/* Artists Section */}
+          {(activeTab === "all" || activeTab === "artists") && results.artists.length > 0 && (
+            <section>
+              <SectionHeader
+                title="Artists"
+                subtitle={`${results.artists.length} matching independent creators`}
+              />
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {results.artists.map((artist) => (
+                  <ArtistCard key={artist.id} artist={artist} />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Albums Section */}
+          {(activeTab === "all" || activeTab === "albums") && results.albums.length > 0 && (
+            <section>
+              <SectionHeader
+                title="Albums & EPs"
+                subtitle={`${results.albums.length} releases found`}
+              />
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {results.albums.map((album) => (
+                  <AlbumCard key={album.id} album={album} />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Playlists Section */}
+          {(activeTab === "all" || activeTab === "playlists") && results.playlists.length > 0 && (
+            <section>
+              <SectionHeader
+                title="Playlists"
+                subtitle={`${results.playlists.length} curated mixes found`}
+              />
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {results.playlists.map((playlist) => (
+                  <PlaylistCard key={playlist.id} playlist={playlist} />
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
+      ) : (
+        /* Empty Query State — Browse All Genres */
         <section className="pt-4">
           <SectionHeader
-            title="Explore Genres & Tags"
-            subtitle="Dive into handpicked independent acoustics"
+            title="Browse All Genres & Moods"
+            subtitle="Dive directly into soundscapes"
+            href="/explore"
+            linkText="View All"
           />
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-            {mockGenres.map((g) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
+            {mockGenres.slice(0, 12).map((genre) => (
               <button
-                key={g.id}
-                onClick={() => handleSelectQuery(g.name)}
-                className="p-4 rounded-xl bg-[#17171F] hover:bg-[#20202A] border border-white/5 hover:border-purple-500/30 text-left transition-all hover:scale-[1.02]"
+                key={genre.id}
+                type="button"
+                onClick={() => handleSelectQuery(genre.name)}
+                className="group relative h-28 rounded-2xl p-4 text-left overflow-hidden flex flex-col justify-end transition-all hover:scale-[1.02] border border-white/5"
+                style={{
+                  background: `linear-gradient(135deg, ${genre.color}25 0%, #17171F 100%)`,
+                }}
               >
-                <span className="text-sm font-bold text-white block">
-                  {g.name}
+                <div
+                  className="absolute top-0 right-0 w-20 h-20 rounded-full blur-xl opacity-30 group-hover:opacity-60 transition-opacity"
+                  style={{ backgroundColor: genre.color }}
+                />
+                <span className="relative z-10 text-sm font-bold text-white group-hover:text-purple-300 transition-colors">
+                  {genre.name}
                 </span>
-                <span className="text-[11px] text-[#71717A] line-clamp-1 mt-1">
-                  {g.description}
+                <span className="relative z-10 text-[10px] text-[#A1A1AA]">
+                  Explore
                 </span>
               </button>
             ))}
@@ -294,7 +368,15 @@ function SearchContent() {
 
 export default function SearchPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-[#A1A1AA]">Loading search catalog...</div>}>
+    <Suspense
+      fallback={
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 pt-8">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <CardSkeleton key={i} />
+          ))}
+        </div>
+      }
+    >
       <SearchContent />
     </Suspense>
   );

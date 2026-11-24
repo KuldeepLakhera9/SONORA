@@ -43,7 +43,7 @@ function mapDbAlbumToFrontend(row: CatalogAlbumWithRelations): Album {
     coverUrl: row.cover_image_path || "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80",
     genre: "Independent",
     type: row.album_type === "EP" ? "EP" : row.album_type === "single" ? "Single" : "Album",
-    trackIds: (row.tracks || []).map((t) => t.id),
+    trackIds: (row.tracks || []).map((t: { id: string }) => t.id),
     description: row.description || undefined,
   };
 }

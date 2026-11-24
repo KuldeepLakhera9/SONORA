@@ -11,7 +11,7 @@ SONORA is a premium independent music discovery and streaming web application co
 - [x] **Phase 1: Premium UI Foundation** (Landing page, discovery feeds, explore, search, library, playlists, albums, artist profile, responsive navigation, player UI).
 - [x] **Phase 2: Supabase Backend & Database Foundation** (14 core tables, strict foreign keys, indexes, RLS policies, role escalation guards, rights verification engine, storage buckets, seed data, TypeScript types, typed repository modules).
 - [x] **Phase 3: Supabase Authentication & User Management** (Signup with username verification & password strength meter, email confirmation callback, secure login, password recovery & reset, profile management, avatar uploads, user menu integration, route protection via proxy, role authorization helpers).
-- [ ] **Phase 4: Artist Submission & Editorial Moderation Portal**
+- [x] **Phase 4: Music Catalog & Discovery Backend** (Rights-verified public catalog view `public_catalog_tracks`, PostgreSQL trigram fuzzy search engine `pg_trgm`, GIN indexes, catalog route handlers `/api/catalog/*`, typed domain repositories, live debounced search, discovery carousels, and 35 automated tests).
 - [ ] **Phase 5: Secure Audio Streaming & Signed Playback Delivery**
 - [ ] **Phase 6: Recommendation Engine & Music DNA Analytics**
 
@@ -30,14 +30,20 @@ SONORA is a premium independent music discovery and streaming web application co
 ```
 ├── docs/                       # Comprehensive architectural documentation
 │   ├── AUTHENTICATION_AND_USER_MANAGEMENT.md # Phase 3 auth architecture & workflows
+│   ├── CATALOG_API_REFERENCE.md # Phase 4 API endpoints, queries, and contracts
+│   ├── CATALOG_SETUP.md        # Migration, seed, and environment guide
 │   ├── DATABASE_ARCHITECTURE.md
 │   ├── DATABASE_SCHEMA.md
+│   ├── MUSIC_CATALOG_ARCHITECTURE.md # Phase 4 catalog view & layered services
+│   ├── MUSIC_RIGHTS_WORKFLOW.md # Phase 4 5-point verification gate
 │   ├── RLS_SECURITY.md
+│   ├── SEARCH_ARCHITECTURE.md  # Phase 4 trigram fuzzy search engine
 │   ├── STORAGE_ARCHITECTURE.md
 │   └── SUPABASE_SETUP.md
 ├── scripts/
-│   ├── test-auth-suite.ts      # Auth validation, schemas, and security test runner
-│   └── test-schema-integrity.ts # Schema, security, and repository automated test runner
+│   ├── test-catalog-suite.ts   # Phase 4 catalog & discovery automated test runner
+│   ├── test-auth-suite.ts      # Phase 3 auth validation, schemas, and security runner
+│   └── test-schema-integrity.ts # Phase 2 schema, security, and repository runner
 ├── src/
 │   ├── app/                    # Next.js App Router routes & layouts
 │   ├── components/             # Reusable UI components & layouts
