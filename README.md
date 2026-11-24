@@ -1,36 +1,102 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SONORA — Independent Music Discovery & Streaming Platform
 
-## Getting Started
+> "Discover music. Discover yourself."
 
-First, run the development server:
+SONORA is a premium independent music discovery and streaming web application combining the intuitive usability and personalization of Spotify with the editorial elegance and depth of Apple Music.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 🚀 Status & Roadmap
+
+- [x] **Phase 1: Premium UI Foundation** (Landing page, discovery feeds, explore, search, library, playlists, albums, artist profile, responsive navigation, player UI).
+- [x] **Phase 2: Supabase Backend & Database Foundation** (14 core tables, strict foreign keys, indexes, RLS policies, role escalation guards, rights verification engine, storage buckets, seed data, TypeScript types, typed repository modules).
+- [ ] **Phase 3: Supabase Authentication & Profile Management**
+- [ ] **Phase 4: Artist Submission & Editorial Moderation Portal**
+- [ ] **Phase 5: Secure Audio Streaming & Signed Playback Delivery**
+- [ ] **Phase 6: Recommendation Engine & Music DNA Analytics**
+
+---
+
+## 🛠️ Technology Stack
+
+- **Frontend**: Next.js 16 (App Router with Turbopack), React 19, TypeScript, Tailwind CSS v4, Lucide React, Zustand.
+- **Backend & Database**: Supabase, PostgreSQL 17, Row Level Security (RLS), Supabase Storage.
+- **Client SDKs**: `@supabase/supabase-js`, `@supabase/ssr`.
+
+---
+
+## 📁 Repository Structure
+
+```
+├── docs/                       # Comprehensive Phase 2 architectural documentation
+│   ├── DATABASE_ARCHITECTURE.md
+│   ├── DATABASE_SCHEMA.md
+│   ├── RLS_SECURITY.md
+│   ├── STORAGE_ARCHITECTURE.md
+│   └── SUPABASE_SETUP.md
+├── scripts/
+│   └── test-schema-integrity.ts # Schema, security, and repository automated test runner
+├── src/
+│   ├── app/                    # Next.js App Router routes & layouts
+│   ├── components/             # Reusable UI components & layouts
+│   ├── data/                   # Phase 1 mock fixtures & helper queries
+│   ├── lib/
+│   │   ├── env.ts              # Centralized environment variable validation
+│   │   └── supabase/           # Browser, Server, Admin, and Middleware Supabase clients
+│   ├── modules/                # Typed domain repository layer
+│   │   ├── catalog/            # Tracks, albums, genres
+│   │   ├── artists/            # Artist profiles & discography
+│   │   ├── playlists/          # Public and user playlists
+│   │   └── library/            # Likes, follows, playback history
+│   ├── stores/                 # Zustand player and library stores
+│   └── types/
+│       ├── database.types.ts   # Strongly typed Supabase schema definitions
+│       └── music.ts            # Frontend domain models
+└── supabase/
+    ├── config.toml             # Supabase CLI configuration
+    ├── migrations/             # Version-controlled SQL migrations
+    ├── tests/                  # PostgreSQL assertion test scripts
+    └── seed.sql                # Fictional development fixtures
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ⚡ Quickstart
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1. Install Dependencies
+```bash
+pnpm install
+```
 
-## Learn More
+### 2. Configure Environment Variables
+```bash
+cp .env.example .env.local
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 3. Run Development Server
+```bash
+pnpm dev
+```
+Open [http://localhost:3000](http://localhost:3000) to explore SONORA.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 4. Run Schema & Security Tests
+```bash
+pnpm dlx tsx scripts/test-schema-integrity.ts
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 5. Production Build
+```bash
+pnpm build
+```
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🔒 Security Architecture Highlights
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Row Level Security**: Enabled across 100% of public tables.
+2. **Role Escalation Protection**: The `guard_profiles_role_escalation` database trigger prevents listeners from self-promoting to privileged roles.
+3. **Rights Verification Gate**: Tracks are never discoverable without an approved rights record with streaming authorization.
+4. **Conflict of Interest Prevention**: Artists are strictly prohibited from approving their own track rights.
+5. **Least-Privilege Storage**: Audio assets and legal rights evidence are strictly private buckets.
+
+For full architectural details, consult the [docs/](file:///c:/Kuldeep's%20Work/Projects/SONORA/docs) directory.
