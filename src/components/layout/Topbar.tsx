@@ -10,6 +10,7 @@ import {
   Search,
 } from "lucide-react";
 import { NotificationDropdown } from "@/components/ui/NotificationDropdown";
+import { UserMenu } from "@/components/layout/user-menu";
 
 function getInitialGreeting(): string {
   if (typeof window === "undefined") return "Good evening";
@@ -80,30 +81,13 @@ export function Topbar() {
         )}
       </div>
 
-      {/* Right: Greeting, Notifications & User Avatar */}
+      {/* Right: Notifications & User Menu */}
       <div className="flex items-center gap-3 md:gap-4 shrink-0">
-        <span className="text-xs font-medium text-[#A1A1AA] hidden lg:inline-block">
-          {greeting}, <span className="text-white font-semibold">Julian</span>
-        </span>
-
         {/* Notifications */}
         <NotificationDropdown />
 
-        {/* User Profile Avatar with explicit relative position */}
-        <Link
-          href="/library"
-          className="relative block w-8 h-8 md:w-9 md:h-9 rounded-full overflow-hidden border border-purple-500/40 hover:border-purple-400 transition-colors"
-          style={{ position: "relative" }}
-          title="Your Profile"
-        >
-          <Image
-            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"
-            alt="Julian"
-            fill
-            sizes="36px"
-            className="object-cover"
-          />
-        </Link>
+        {/* User Navigation & Profile Menu */}
+        <UserMenu />
       </div>
     </header>
   );

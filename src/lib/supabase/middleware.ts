@@ -2,13 +2,18 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { getSupabasePublicEnv, isSupabaseConfigured } from "@/lib/env";
 
+const PROTECTED_ROUTES = ["/profile", "/library"];
+const AUTH_ROUTES = ["/login", "/signup"];
+
 /**
- * Middleware session updater for Supabase Auth.
- * Refreshes auth tokens and ensures cookies are kept in sync with responses.
+ * Middleware session updater and route guard.
+ * Refreshes auth tokens, synchronizes cookies, and validates access to protected routes.
  */
 export async function updateSession(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+
+  // If Supabase is unconfigured in local dev, allow navigation to all pages for preview
   if (!isSupabaseConfigured()) {
-    // Graceful pass-through when Supabase is not configured yet in local development
     return NextResponse.next({ request });
   }
 
@@ -39,8 +44,28 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  // Refreshes session if expired
-  await supabase.auth.getUser();
+  // Verify authenticated user on the server
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const isProtectedRoute = PROTECTED_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`)
+  );
+  const isAuthRoute = AUTH_ROUTES.some((route) => pathname === route);
+
+  // Unauthenticated user trying to access protected route -> redirect to login
+  if (!user && isProtectedRoute) {
+    const redirectUrl = new URL("/login", request.url);
+    redirectUrl.searchParams.set("redirectTo", pathname);
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // Authenticated user trying to access login/signup -> redirect to home
+  if (user && isAuthRoute) {
+    const redirectUrl = new URL("/home", request.url);
+    return NextResponse.redirect(redirectUrl);
+  }
 
   return response;
 }

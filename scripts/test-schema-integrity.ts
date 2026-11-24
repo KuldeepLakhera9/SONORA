@@ -69,6 +69,7 @@ async function runTests() {
   assert(migrationFiles.some((f) => f.includes("indexes")), "Performance indexes migration exists");
   assert(migrationFiles.some((f) => f.includes("rls_policies")), "RLS security policies migration exists");
   assert(migrationFiles.some((f) => f.includes("storage")), "Storage bucket migration exists");
+  assert(migrationFiles.some((f) => f.includes("auth_profile_trigger")), "Auth profile trigger migration exists");
 
   // Read all migration contents
   const combinedMigrations = migrationFiles

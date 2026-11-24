@@ -42,16 +42,16 @@ export function LandingHeader() {
         {/* Right CTA */}
         <div className="hidden md:flex items-center gap-4">
           <Link
-            href="/home"
+            href="/login"
             className="text-xs font-semibold text-[#A1A1AA] hover:text-white transition-colors px-3 py-2"
           >
             Sign In
           </Link>
           <Link
-            href="/home"
+            href="/signup"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-purple-600/25 transition-all hover:scale-105 active:scale-95"
           >
-            <span>Open Player</span>
+            <span>Get Started</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
